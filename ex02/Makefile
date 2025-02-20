@@ -1,5 +1,5 @@
 NAME = convert
-CPPFILES = main.cpp test.cpp
+CPPFILES = main.cpp Base.cpp
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 CPP = c++
 

@@ -6,7 +6,7 @@
 /*   By: ryagoub <ryagoub@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 16:16:24 by ryagoub           #+#    #+#             */
-/*   Updated: 2025/02/18 23:35:47 by ryagoub          ###   ########.fr       */
+/*   Updated: 2025/02/20 04:30:27 by ryagoub          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
  #include <climits>
  #include <cfloat>
 #include <cmath>
+#include <iomanip>
 class ScalarConverter
 {
 	private:
