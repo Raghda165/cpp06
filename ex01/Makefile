@@ -1,4 +1,4 @@
-NAME = convert
+NAME = serial
 CPPFILES = main.cpp Serializer.cpp
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 CPP = c++

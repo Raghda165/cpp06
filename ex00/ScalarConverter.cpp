@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ryagoub <ryagoub@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/18 16:16:28 by ryagoub           #+#    #+#             */
-/*   Updated: 2025/02/20 05:12:21 by ryagoub          ###   ########.fr       */
+/*   Created: 2025/02/20 05:07:24 by ryagoub           #+#    #+#             */
+/*   Updated: 2025/02/21 21:32:15 by ryagoub          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,33 +24,8 @@ ScalarConverter & ScalarConverter::operator=(const ScalarConverter &other)
 {
 	(void)other;
 	return(*this);
-	}
+}
 ScalarConverter::~ScalarConverter(){std::cout <<"the destructor has been called"<<"\n";}
-
-bool is_convertable(std::string s)
-{
-	if(s.length()!= 1)
-	{
-		if (s=="-inff"||s=="+inff" || s==" nanf"||s== "-inf"||s=="+inf"||s=="nan")
-			return(1);
-		else if((std::all_of(s.begin(),s.end(),::isdigit))== 1)
-			return(0);
-	}
-	return(1);
-}
-
-bool is_all_digit(std::string s)
-{
-	int len= s.length();
-	for(int i = 0; i < len; i++)
-	{
-		if( s[i] == '-'||s[i]== '+')
-			i++;
-		if(((!isdigit(s[i]))&&len!=1 ))
-			return(0);
-	}
-	return(1);
-}
 
 bool is_all_digit_for_char(std::string s)
 {
@@ -62,115 +37,132 @@ bool is_all_digit_for_char(std::string s)
 	}
 	return(1);
 }
+bool is_all_digit(std::string s)
+{
+	int len= s.length();
+	for(int i = 0; i < len; i++)
+	{
+		if( s[i] == '-'||s[i]== '+'||s[i]=='.')
+			i++;
+		 if(((!isdigit(s[i]))&&len!=1 ))
+			return(0);
+	}
+	return(1);
+}
+int categorize(std::string &s)
+{
+	if (s=="-inff"||s=="+inff" || s=="nanf"||s== "-inf"||s=="+inf"||s=="nan")
+			return(1);
+	if(s.length()==1 && isalpha(s[0]))
+	    return(2);
+	else if(isdigit(s[0])&&s[s.length()-1]== 'f'&&s.length()!=1)
+		s.erase(s.size() - 1);
+	else if(!is_all_digit(s))
+		return(4);
+	return(0);
+	// else if
+}
 void to_char(std::string s)
 {
 	std::cout <<"char: ";
-	if(is_all_digit_for_char(s)|| s.length()== 1)
+	if(categorize(s) == 1)
+	  std::cout <<"impossible"<<"\n";
+	else if(categorize(s)== 4||s[0]=='-')
+		std::cout<<"impossible"<<"\n";
+	else
 	{
 		if(!isalpha(s[0]))
-		{
-			int num =	stoi(s);
-			char c = static_cast<char>(s[0]);
+		{	int num = stoi(s);
+			char c = static_cast<char>(num);
 			if ((num>=0 && num <= 31 )|| num==127)
 				std::cout <<"Non displayable"<<"\n";
 			else
-				std::cout<<'"'<< c <<'"'<<"\n";
-		}
+				std::cout<<"'"<< c <<"'"<<"\n";}
 		else
-			std::cout << s[0]<<"\n";
+		 std::cout<<s<<"\n";
 	}
+}
+void to_int(std::string s)
+{
+	std::cout <<"int: ";
+	if(categorize(s)== 2)
+	{
+		float n = static_cast<int>(s[0]);
+		std::cout<< std::fixed<< std::setprecision(1)<<n<<"\n";
+	}
+	else if(categorize(s)== 4||categorize(s) == 1)
+		std::cout<<"impossible"<<"\n";
 	else
-	      std::cout <<"impossible"<<"\n";
-}
-void to_int(double num)
-{
-	std::cout << "int: ";
-	if (num < INT_MIN || num > INT_MAX)
-		std::cout <<"impossible"<<"\n";
-	else
-	{
-	  int n = static_cast<int>(num);
-	  std::cout << n << "\n";
-	}
-
-}
-void to_float(double num)
-{
-	std::cout << "float: ";
-	// if ((num != 0 && std::fabs(num) < FLT_TRUE_MIN) || num > FLT_MAX)
-	// 	std::cout <<"impossible"<<"\n";
-	  float n = static_cast<float>(num);
-	  std::cout <<std::fixed << std::setprecision(1) <<n << "f"<<"\n";
-}
-void handle_math_words(std::string s)
-{
-	if(s== "nan")
-	{
-		std::cout<<"int: " << "impossible"<<"\n";
-		std::cout<<"float: " <<s<<"f"<<"\n";
-		std::cout<<"double: " <<s<<"\n";
-	}
-	if(s== "-in")
-	{
-		std::cout<<"int: " << "impossible"<<"\n";
-		std::cout<<"float: " <<s<<"ff"<<"\n";
-		std::cout<<"double: " <<s<<"f"<<"\n";
-	}
-	if(s== "+in")
-	{
-		std::cout<<"int: " << "impossible"<<"\n";
-		std::cout<<"float: " <<s<<"ff"<<"\n";
-		std::cout<<"double: " <<s<<"f"<<"\n";
-	}
-	if(s== "+inf")
-	{
-		std::cout<<"int: " << "impossible"<<"\n";
-		std::cout<<"float: " <<s<<"f"<<"\n";
-		std::cout<<"double: " <<s<<"\n";
-	}
-	if(s== "-inf")
-	{
-		std::cout<<"int: " << "impossible"<<"\n";
-		std::cout<<"float: " <<s<<"f"<<"\n";
-		std::cout<<"double: " <<s<<"\n";
-	}
-}
-
-bool is_math_exp(std::string s)
-{
-	if(s== "nan"||s== "nanf"||s== "+inf"||s=="-inff"||s == "-inf"||s=="+inff")
-		return(1);
-	return(0);
-}
-
-void ScalarConverter:: convert(std::string s)
-{
-	to_char(s);
-	if(is_math_exp(s))
-	{
-		if ((!s.empty() && s.length()!= 1)|| s== "nan")
-      {
-		if(s[s.length()- 1]=='f')
-		   s.erase(s.size() - 1);
-	    handle_math_words(s);
-	  }
-	}
-	if(s.length() == 1&&isalpha(s[0]))
-	{
-		std::cout<< "int: "<< static_cast<float>(s[0])<<"\n";
-		std::cout<<"float: "<< std::fixed << std::setprecision(1) <<static_cast<float>(s[0])<<"f"<<"\n";
-		std::cout<<"double: "<< std::setprecision(1) <<static_cast<double>(s[0])<<"\n";
-	}
-	else if(is_all_digit(s) == 1)
 	{
 		std::stringstream ss(s);
 		double num ;
 		ss>>num;
-		to_int(num);
-		to_float(num);
-		std::cout << "double: ";
-		std::cout<<std::fixed << std::setprecision(1)  << num << "\n";
-
+		int n = static_cast<int>(num);
+		std::cout<<n<<"\n";
 	}
+
+}
+void to_float(std::string s)
+{
+	std::cout <<"float: ";
+	if(categorize(s)== 2)
+	{
+		float n = static_cast<float>(s[0]);
+		std::cout<< std::fixed<< std::setprecision(1)<<n;
+		std::cout<<"f"<<"\n";
+	}
+	else if(categorize(s) == 1)
+	{
+		if(s.length()==3||(s.length()==4&&(s[0]=='-'||s[0]=='+')))
+		  std::cout<<s<<"f"<<"\n";
+		else
+		  std::cout<<s<<"\n";
+	}
+	else if(categorize(s)== 4)
+		std::cout<<"impossible"<<"\n";
+	else
+	{
+		std::stringstream ss(s);
+		double num ;
+		ss>>num;
+		float n = static_cast<float>(num);
+		std::cout<< std::fixed << std::setprecision(1)<<n<<"f"<<"\n";
+	}
+	// else if(categorize(s) == 2)
+}
+void to_double(std::string s)
+{
+	std::cout <<"double: ";
+	if(categorize(s)== 2)
+	{
+		double n = static_cast<double>(s[0]);
+		std::cout<<n<<"\n";
+	}
+	else if(categorize(s) == 1)
+	{
+		if(s== "nanf"||s=="-inff"||s=="+inff")
+		 {
+			s.erase(s.size() - 1);
+		 }
+		std::cout<<s<<"\n";
+	}
+	else if(categorize(s)== 4)
+		std::cout<<"impossible"<<"\n";
+	else
+	{
+		std::stringstream ss(s);
+		double num ;
+		ss>>num;
+		std::cout<<num<<"\n";
+	}
+}
+
+
+void ScalarConverter:: convert(std::string s)
+{
+	to_char(s);
+  to_int(s);
+  to_float(s);
+  to_double(s);
 
 }
