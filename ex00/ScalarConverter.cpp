@@ -6,7 +6,7 @@
 /*   By: ryagoub <ryagoub@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 05:07:24 by ryagoub           #+#    #+#             */
-/*   Updated: 2025/02/21 21:32:15 by ryagoub          ###   ########.fr       */
+/*   Updated: 2025/02/21 22:05:17 by ryagoub          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ void to_char(std::string s)
 	else
 	{
 		if(!isalpha(s[0]))
-		{	int num = stoi(s);
+		{
+				int num = std::atoi(s.c_str());
 			char c = static_cast<char>(num);
 			if ((num>=0 && num <= 31 )|| num==127)
 				std::cout <<"Non displayable"<<"\n";
